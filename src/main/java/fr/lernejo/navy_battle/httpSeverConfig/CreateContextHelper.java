@@ -1,17 +1,9 @@
-package navy_battle.httpSeverConfig;
+package fr.lernejo.navy_battle.httpSeverConfig;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import navy_battle.controllers.iMainController;
-import navy_battle.model.GameStarter;
-import navy_battle.utils.ControllerResponse;
-
-import java.io.IOException;
-import java.io.UTFDataFormatException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import fr.lernejo.navy_battle.controllers.iMainController;
+import fr.lernejo.navy_battle.utils.ControllerResponse;
 
 public class CreateContextHelper
 {

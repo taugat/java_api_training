@@ -1,7 +1,7 @@
-package navy_battle;
+package fr.lernejo.navy_battle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import navy_battle.model.GameStarter;
+import fr.lernejo.navy_battle.model.GameStarter;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

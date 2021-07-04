@@ -1,8 +1,8 @@
-package navy_battle.httpSeverConfig;
+package fr.lernejo.navy_battle.httpSeverConfig;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import navy_battle.utils.ControllerResponse;
+import fr.lernejo.navy_battle.utils.ControllerResponse;
 
 import java.io.IOException;
 import java.io.OutputStream;

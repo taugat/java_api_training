@@ -1,12 +1,11 @@
-package navy_battle.controllers;
+package fr.lernejo.navy_battle.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
-import navy_battle.httpSeverConfig.HttpServerHelper;
-import navy_battle.model.GameStarter;
-import navy_battle.utils.ControllerResponse;
+import fr.lernejo.navy_battle.httpSeverConfig.HttpServerHelper;
+import fr.lernejo.navy_battle.model.GameStarter;
+import fr.lernejo.navy_battle.utils.ControllerResponse;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

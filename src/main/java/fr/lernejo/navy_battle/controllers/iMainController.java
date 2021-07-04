@@ -1,10 +1,7 @@
-package navy_battle.controllers;
+package fr.lernejo.navy_battle.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sun.net.httpserver.HttpExchange;
-import navy_battle.utils.ControllerResponse;
-
-import java.io.IOException;
+import fr.lernejo.navy_battle.utils.ControllerResponse;
 
 public interface iMainController {
 

@@ -1,4 +1,4 @@
-package navy_battle.model;
+package fr.lernejo.navy_battle.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

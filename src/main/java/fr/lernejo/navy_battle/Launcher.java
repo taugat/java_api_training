@@ -1,8 +1,8 @@
-package navy_battle;
+package fr.lernejo.navy_battle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import navy_battle.httpSeverConfig.HttpServerHelper;
-import navy_battle.model.GameStarter;
+import fr.lernejo.navy_battle.httpSeverConfig.HttpServerHelper;
+import fr.lernejo.navy_battle.model.GameStarter;
 
 import java.io.IOException;
 import java.util.UUID;

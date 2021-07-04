@@ -1,4 +1,4 @@
-package navy_battle.utils;
+package fr.lernejo.navy_battle.utils;
 
 public class ControllerResponse {
 
