@@ -18,7 +18,7 @@ class LauncherTest {
 
     @BeforeAll
     static void launch(){
-        new Launcher().launchHttpServer(8795);
+        new Launcher().init(8795, null);
     }
 
     @Test
@@ -79,5 +79,11 @@ class LauncherTest {
         );
 
         assertEquals(response.statusCode(),400);
+    }
+
+    @Test
+    void contactSecondSever()
+    {
+        new Launcher().init(9876, "http://localhost:8795/");
     }
 }

@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
 public class HttpServerHelper {
@@ -33,4 +34,20 @@ public class HttpServerHelper {
         httpServer.start();
     }
 
+
+    public HttpResponse<String> sendPostRequest(String adversaryUrl, String path, String body) throws ExecutionException, InterruptedException {
+        HttpRequest requetePost = HttpRequest.newBuilder()
+            .uri(URI.create(adversaryUrl + path))
+            .setHeader("Accept", "application/json")
+            .setHeader("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(body))
+            .build();
+
+        return HttpClient.newHttpClient().sendAsync(requetePost, HttpResponse.BodyHandlers.ofString())
+            .get();
+    }
+
+    public String getURL() {
+        return httpServer.getAddress().toString();
+    }
 }
