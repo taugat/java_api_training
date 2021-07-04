@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
+import navy_battle.httpSeverConfig.HttpServerHelper;
 import navy_battle.model.GameStarter;
 import navy_battle.utils.ControllerResponse;
 
@@ -13,6 +14,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class MainController implements iMainController{
+
+    private final HttpServerHelper httpServerHelper;
+
+    public MainController(HttpServerHelper httpServerHelper) {
+        this.httpServerHelper = httpServerHelper;
+    }
 
     @Override
     public ControllerResponse defaultPingResponse() {

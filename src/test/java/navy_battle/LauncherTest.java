@@ -18,7 +18,7 @@ class LauncherTest {
 
     @BeforeAll
     static void launch(){
-        new Launcher().launchHttpServer();
+        new Launcher().launchHttpServer(8795);
     }
 
     @Test
@@ -26,7 +26,7 @@ class LauncherTest {
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpResponse<String> response = httpClient.send(
             HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:9876/ping"))
+                .uri(URI.create("http://localhost:8795/ping"))
             .build(),
             HttpResponse.BodyHandlers.ofString()
         );
@@ -42,7 +42,7 @@ class LauncherTest {
 
         HttpResponse<String> response = httpClient.send(
             HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:9876/api/game/start"))
+                .uri(URI.create("http://localhost:8795/api/game/start"))
                 .POST(HttpRequest.BodyPublishers.ofString(gameStarter))
                 .build(),
             HttpResponse.BodyHandlers.ofString()
@@ -57,7 +57,7 @@ class LauncherTest {
 
         HttpResponse<String> response = httpClient.send(
             HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:9876/api/game/start"))
+                .uri(URI.create("http://localhost:8795/api/game/start"))
                 .GET()
                 .build(),
             HttpResponse.BodyHandlers.ofString()
@@ -72,7 +72,7 @@ class LauncherTest {
 
         HttpResponse<String> response = httpClient.send(
             HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:9876/api/game/start"))
+                .uri(URI.create("http://localhost:8795/api/game/start"))
                 .POST(HttpRequest.BodyPublishers.ofString("{'id'='hjk'}"))
                 .build(),
             HttpResponse.BodyHandlers.ofString()
