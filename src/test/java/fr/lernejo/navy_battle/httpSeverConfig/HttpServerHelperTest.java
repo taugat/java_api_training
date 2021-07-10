@@ -35,8 +35,17 @@ class HttpServerHelperTest {
         });
         httpServerHelper.init();
         httpServerHelper.start(null);
-        new Launcher().init(9876, "http://localhost:8795");
+
+        HttpServerHelper httpServerHelper1 = new HttpServerHelper(9876);
+        httpServerHelper1.init();
+        httpServerHelper1.start("http://localhost:8795");
+
+        httpServerHelper.stop();
+        httpServerHelper1.stop();
+
         assertTrue(createGame[0]);
+
+
     }
 
 }

@@ -1,7 +1,9 @@
 package fr.lernejo.navy_battle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.lernejo.navy_battle.httpSeverConfig.HttpServerHelper;
 import fr.lernejo.navy_battle.model.GameStarter;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -13,14 +15,24 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 class LauncherTest {
 
+    private static HttpServerHelper httpServerHelper1;
+
     @BeforeAll
-    static void launch(){
-        new Launcher().init(8795, null);
+    static void launch() throws IOException, ExecutionException, InterruptedException {
+        httpServerHelper1 = new HttpServerHelper(8795);
+        httpServerHelper1.init();
+        httpServerHelper1.start(null);
     }
 
+    @AfterAll
+    static void stop(){
+
+        httpServerHelper1.stop();
+    }
     @Test
     void launchHttpServerPing() throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
