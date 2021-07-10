@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class GameStarter {
 
-    String id;
-    String url;
-    String message;
+    private final String id;
+    private final String url;
+    private final String message;
 
     public GameStarter(@JsonProperty(value = "id", required = true) String id,
                        @JsonProperty(value = "url", required = true) String url,
@@ -20,24 +20,12 @@ public class GameStarter {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public String getMessage() {
         return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     @Override

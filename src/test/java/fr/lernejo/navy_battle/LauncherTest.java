@@ -36,7 +36,7 @@ class LauncherTest {
     }
 
     @Test
-    void validGameStarterRequest() throws IOException, InterruptedException {
+    void validPostGameStarterRequest() throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
         String gameStarter= new ObjectMapper().writeValueAsString(new GameStarter(UUID.randomUUID().toString(),"http://localhost:9876","message"));
 
@@ -52,7 +52,7 @@ class LauncherTest {
     }
 
     @Test
-    void getGameStarterRequest() throws IOException, InterruptedException {
+    void invalidGetGameStarterRequest() throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
 
         HttpResponse<String> response = httpClient.send(
@@ -67,7 +67,7 @@ class LauncherTest {
     }
 
     @Test
-    void incorrectGameStarterRequest() throws IOException, InterruptedException {
+    void invalidPostGameStarterRequest() throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
 
         HttpResponse<String> response = httpClient.send(
@@ -80,10 +80,32 @@ class LauncherTest {
 
         assertEquals(response.statusCode(),400);
     }
-
     @Test
-    void contactSecondSever()
-    {
-        new Launcher().init(9876, "http://localhost:8795/");
+    void correctFireRequest() throws IOException, InterruptedException {
+        HttpClient httpClient = HttpClient.newHttpClient();
+
+        HttpResponse<String> response = httpClient.send(
+            HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8795/api/game/fire?cell=B7"))
+                .GET()
+                .build(),
+            HttpResponse.BodyHandlers.ofString()
+        );
+
+        assertEquals(response.statusCode(),202);
+    }
+    @Test
+    void invalidFireRequest() throws IOException, InterruptedException {
+        HttpClient httpClient = HttpClient.newHttpClient();
+
+        HttpResponse<String> response = httpClient.send(
+            HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8795/api/game/fire"))
+                .GET()
+                .build(),
+            HttpResponse.BodyHandlers.ofString()
+        );
+
+        assertEquals(response.statusCode(),400);
     }
 }

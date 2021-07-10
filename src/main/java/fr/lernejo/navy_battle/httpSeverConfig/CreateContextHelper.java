@@ -5,6 +5,9 @@ import com.sun.net.httpserver.HttpServer;
 import fr.lernejo.navy_battle.controllers.iMainController;
 import fr.lernejo.navy_battle.utils.ControllerResponse;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+
 public class CreateContextHelper
 {
     public void createPingContext(HttpServer httpServer, iMainController mainController)
@@ -12,12 +15,8 @@ public class CreateContextHelper
         httpServer.createContext("/ping",
             new CallHandler() {
                 @Override
-                protected ControllerResponse onPostResponse(HttpExchange exchange){
-                    return mainController.defaultPingResponse();
-                }
-                @Override
-                protected ControllerResponse onGetResponse(HttpExchange exchange) {
-                    return mainController.defaultPingResponse();
+                public void handle(HttpExchange exchange) throws IOException {
+                    super.responseOK(exchange, HttpURLConnection.HTTP_OK,"OK");
                 }
             });
     }
@@ -29,9 +28,15 @@ public class CreateContextHelper
                 protected ControllerResponse onPostResponse(HttpExchange exchange){
                     return mainController.postCreateApiGameStartResponse(exchange);
                 }
+            });
+    }
+    public void createApiFire(HttpServer httpServer, iMainController mainController)
+    {
+        httpServer.createContext("/api/game/fire",
+            new CallHandler() {
                 @Override
                 protected ControllerResponse onGetResponse(HttpExchange exchange) {
-                    return null;
+                    return mainController.getFire(exchange);
                 }
             });
     }

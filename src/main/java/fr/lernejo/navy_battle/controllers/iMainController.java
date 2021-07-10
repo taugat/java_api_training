@@ -5,7 +5,9 @@ import fr.lernejo.navy_battle.utils.ControllerResponse;
 
 public interface iMainController {
 
-    ControllerResponse defaultPingResponse();
-
     ControllerResponse postCreateApiGameStartResponse(HttpExchange gameStarter);
+
+    ControllerResponse getFire(HttpExchange exchange);
+
+    void sendPostStartGame(String url);
 }

@@ -26,9 +26,13 @@ public abstract class CallHandler implements HttpHandler {
         }
     }
 
-    protected abstract ControllerResponse onPostResponse(HttpExchange exchange);
+    protected ControllerResponse onPostResponse(HttpExchange exchange){
+        return null;
+    }
 
-    protected abstract ControllerResponse onGetResponse(HttpExchange exchange);
+    protected ControllerResponse onGetResponse(HttpExchange exchange){
+        return null;
+    }
 
     public void responseOK(HttpExchange exchange, int rCode, String response) throws IOException {
         exchange.sendResponseHeaders(rCode, response.length());
