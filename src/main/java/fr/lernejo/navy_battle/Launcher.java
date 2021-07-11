@@ -12,7 +12,8 @@ public class Launcher {
 
     public static void main(String[] args) {
         int port = Integer.parseInt(args[0]);
-        new Launcher().init(port, args[1]);
+        String url = args.length>1 ? args[1] : null;
+        new Launcher().init(port, url);
     }
 
     public void init(int port, String url) {
