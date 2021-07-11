@@ -16,6 +16,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class MainController implements iMainController{
 
@@ -41,7 +42,7 @@ public class MainController implements iMainController{
                 gameControllers.put(url, new GameController(gameStarter.getId()));
                 sendGetFire(url);
             }
-        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+        } catch (ExecutionException | InterruptedException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -56,7 +57,7 @@ public class MainController implements iMainController{
             if (!roundStatus.isShipLeft()){
                 gameControllers.get(url).endGame(true);
             }
-        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+        } catch (ExecutionException | InterruptedException | IOException | TimeoutException e) {
             e.printStackTrace();
         }
     }
@@ -74,9 +75,9 @@ public class MainController implements iMainController{
     public ControllerResponse getFire(HttpExchange exchange) throws Exception{
         Map<String,String> requestURI = utils.decodeParams(exchange.getRequestURI().getRawQuery());
         CellLocation cellLocation = new CellLocation(requestURI.get("cell"));
-        String url = "http://localhost:" + exchange.getRequestURI().getPort();
+        String url = gameControllers.entrySet().iterator().next().getKey();
         if (gameControllers.containsKey(url)) {
-            GameController cgameController = gameControllers.get(url);
+            GameController cgameController = gameControllers.entrySet().iterator().next().getValue();
             RoundStatus roundStatus = cgameController.getRoundStatus(cellLocation);
             ControllerResponse.iOnResponseSentListener onResponseSentListener = null;
             if (!roundStatus.isShipLeft()) cgameController.endGame(false);

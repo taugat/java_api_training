@@ -44,7 +44,7 @@ public class GameController {
         }
     }
     public void endGame(boolean b) {
-
+        System.out.println("Game Finish " + (b ? "WIN":"LOSE"));
     }
     public RoundStatus getRoundStatus(CellLocation cellLocation) {
         RoundStatus.eConsequence consequence = mySea[cellLocation.getLin()][cellLocation.getCol()].onHit();

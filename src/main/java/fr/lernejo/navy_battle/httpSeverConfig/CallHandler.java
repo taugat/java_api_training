@@ -42,6 +42,7 @@ public abstract class CallHandler implements HttpHandler {
             body.write(response.getBytes());
             body.flush();
         }
+        exchange.close();
     }
 
     public void responseNotfound(HttpExchange exchange) throws IOException {
@@ -52,5 +53,6 @@ public abstract class CallHandler implements HttpHandler {
             body.write(response.getBytes());
             body.flush();
         }
+        exchange.close();
     }
 }

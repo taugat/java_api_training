@@ -14,6 +14,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class HttpServerHelper {
 
@@ -47,7 +49,7 @@ public class HttpServerHelper {
         }
     }
 
-    public HttpResponse<String> sendPostRequest(String adversaryUrl, String path, String body) throws ExecutionException, InterruptedException {
+    public HttpResponse<String> sendPostRequest(String adversaryUrl, String path, String body) throws ExecutionException, InterruptedException, IOException {
         HttpRequest requestPost = HttpRequest.newBuilder()
             .uri(URI.create(adversaryUrl + path))
             .setHeader("Accept", "application/json")
@@ -55,11 +57,11 @@ public class HttpServerHelper {
             .POST(HttpRequest.BodyPublishers.ofString(body))
             .build();
 
-        return HttpClient.newHttpClient().sendAsync(requestPost, HttpResponse.BodyHandlers.ofString())
-            .get();
+        return HttpClient.newHttpClient().sendAsync(requestPost,HttpResponse.BodyHandlers.ofString()).get();
     }
 
-    public HttpResponse<String> sendGetRequest(String adversaryUrl, String path) throws ExecutionException, InterruptedException {
+    public HttpResponse<String> sendGetRequest(String adversaryUrl, String path) throws ExecutionException, InterruptedException, IOException, TimeoutException {
+        System.out.println("FROM :"+ getURL()+" TO:" + adversaryUrl);
         HttpRequest requestGet = HttpRequest.newBuilder()
             .uri(URI.create(adversaryUrl + path))
             .setHeader("Accept", "application/json")
@@ -67,8 +69,7 @@ public class HttpServerHelper {
             .GET()
             .build();
 
-        return HttpClient.newHttpClient().sendAsync(requestGet, HttpResponse.BodyHandlers.ofString())
-            .get();
+        return HttpClient.newHttpClient().sendAsync(requestGet, HttpResponse.BodyHandlers.ofString()).get(100, TimeUnit.SECONDS);
     }
 
     public String getURL() {

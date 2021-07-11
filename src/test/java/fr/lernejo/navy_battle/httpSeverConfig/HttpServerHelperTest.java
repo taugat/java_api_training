@@ -2,6 +2,7 @@ package fr.lernejo.navy_battle.httpSeverConfig;
 
 import com.sun.net.httpserver.HttpExchange;
 import fr.lernejo.navy_battle.Launcher;
+import fr.lernejo.navy_battle.controllers.MainController;
 import fr.lernejo.navy_battle.controllers.iMainController;
 import fr.lernejo.navy_battle.utils.ControllerResponse;
 import org.junit.jupiter.api.Test;
@@ -53,4 +54,10 @@ class HttpServerHelperTest {
 
     }
 
+    @Test
+    void gameEnd() throws IOException, ExecutionException, InterruptedException {
+
+        Launcher.main(new String[]{"8795"});
+        Launcher.main(new String[]{"9876","http://localhost:8795"});
+    }
 }
