@@ -1,13 +1,11 @@
 package fr.lernejo.navy_battle.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import fr.lernejo.navy_battle.httpSeverConfig.HttpServerHelper;
-import fr.lernejo.navy_battle.model.Cell;
-import fr.lernejo.navy_battle.model.CellStatus;
-import fr.lernejo.navy_battle.model.GameController;
+import fr.lernejo.navy_battle.model.CellLocation;
+import fr.lernejo.navy_battle.model.RoundStatus;
 import fr.lernejo.navy_battle.model.GameStarter;
 import fr.lernejo.navy_battle.utils.ControllerResponse;
 import fr.lernejo.navy_battle.utils.Utils;
@@ -16,11 +14,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 public class MainController implements iMainController{
 
@@ -52,11 +48,11 @@ public class MainController implements iMainController{
 
     private void sendGetFire(String url) {
         try {
-            Cell cell = gameController.doFire();
-            HttpResponse<String> response = httpServerHelper.sendGetRequest(url, "/api/game/fire?cell=" + cell.toString());
-            CellStatus cellStatus = new ObjectMapper().readValue(response.body(), CellStatus.class);
-            gameController.resultFire(cellStatus.getConsequence(), cell);
-            if (!cellStatus.isShipLeft()){
+            CellLocation cellLocation = gameController.doFire();
+            HttpResponse<String> response = httpServerHelper.sendGetRequest(url, "/api/game/fire?cell=" + cellLocation.toString());
+            RoundStatus roundStatus = new ObjectMapper().readValue(response.body(), RoundStatus.class);
+            gameController.resultFire(roundStatus.getConsequence(), cellLocation);
+            if (!roundStatus.isShipLeft()){
                 gameController.endGame(true);
                 //httpServerHelper.stop();
             }
@@ -92,12 +88,12 @@ public class MainController implements iMainController{
             Map<String,String> requestURI = utils.decodeParams(
                 exchange.getRequestURI().getRawQuery()
             );
-            Cell cell = new Cell(requestURI.get("cell"));
+            CellLocation cellLocation = new CellLocation(requestURI.get("cell"));
             try {
-                CellStatus cellStatus = gameController.getCellStatus(cell);
-                if (!cellStatus.isShipLeft())
+                RoundStatus roundStatus = gameController.getRoundStatus(cellLocation);
+                if (!roundStatus.isShipLeft())
                     gameController.endGame(false);
-                response = new ControllerResponse(HttpURLConnection.HTTP_ACCEPTED, new ObjectMapper().writeValueAsString(cellStatus));
+                response = new ControllerResponse(HttpURLConnection.HTTP_ACCEPTED, new ObjectMapper().writeValueAsString(roundStatus));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
                 response = new ControllerResponse(HttpURLConnection.HTTP_INTERNAL_ERROR,"Internal Error");
