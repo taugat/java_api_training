@@ -12,6 +12,7 @@ public class GameController {
     private final CellStatus[][] adversarySea = new CellStatus[seaSize][seaSize];
     private final boolean[] shipsLeft = new boolean[5];
     private final Ship[] ships = new Ship[5];
+    private final int nextTarget[] = {0,0};
 
     private enum CellStatus
     {
@@ -60,12 +61,20 @@ public class GameController {
     }
 
     public CellLocation doFire() {
+        CellLocation cellLocation = null;
         try {
-            return new CellLocation("B7");
+            cellLocation = new CellLocation(nextTarget[0],nextTarget[1]);
+            if (nextTarget[0] == 9)
+            {
+                nextTarget[0] = 0;
+                nextTarget[1] += 1;
+            }
+            else
+                nextTarget[0] += 1;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
+        return cellLocation;
     }
     public void resultFire(RoundStatus.eConsequence consequence, CellLocation cellLocation) {
         adversarySea[cellLocation.getLin()][cellLocation.getCol()] = switch (consequence){
