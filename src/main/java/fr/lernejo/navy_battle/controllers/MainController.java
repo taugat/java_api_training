@@ -14,16 +14,13 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class MainController implements iMainController{
 
     private final HttpServerHelper httpServerHelper;
-    private final List<GameController> gameControllers = new ArrayList<>();
+    private final Map<String, GameController> gameControllers = new HashMap<>();
     private final UUID id = UUID.randomUUID();
     private final Utils utils;
 
@@ -41,7 +38,7 @@ public class MainController implements iMainController{
             if (response.statusCode() == HttpURLConnection.HTTP_ACCEPTED)
             {
                 GameStarter gameStarter = new ObjectMapper().readValue(response.body(), GameStarter.class);
-                gameControllers.add(new GameController(gameStarter.getId()));
+                gameControllers.put(url, new GameController(gameStarter.getId()));
                 sendGetFire(url);
             }
         } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
@@ -52,12 +49,12 @@ public class MainController implements iMainController{
     @Override
     public void sendGetFire(String url) {
         try {
-            CellLocation cellLocation = gameControllers.get(0).doFire();
+            CellLocation cellLocation = gameControllers.get(url).doFire();
             HttpResponse<String> response = httpServerHelper.sendGetRequest(url, "/api/game/fire?cell=" + cellLocation.toString());
             RoundStatus roundStatus = new ObjectMapper().readValue(response.body(), RoundStatus.class);
-            gameControllers.get(0).resultFire(roundStatus.getConsequence(), cellLocation);
+            gameControllers.get(url).resultFire(roundStatus.getConsequence(), cellLocation);
             if (!roundStatus.isShipLeft()){
-                gameControllers.get(0).endGame(true);
+                gameControllers.get(url).endGame(true);
             }
         } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
             e.printStackTrace();
@@ -68,21 +65,24 @@ public class MainController implements iMainController{
     public ControllerResponse postCreateApiGameStartResponse(HttpExchange httpExchange) throws Exception{
             String requestBody = new String(httpExchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
             GameStarter gameStarter = new ObjectMapper().readValue(requestBody, GameStarter.class);
-            gameControllers.add(new GameController(gameStarter.getId()));
+            gameControllers.put(gameStarter.getUrl(), new GameController(gameStarter.getId()));
             String gameStarterResponse = new ObjectMapper().writeValueAsString(new GameStarter(id.toString(),httpServerHelper.getURL(),"May the best code win"));
             return new ControllerResponse(HttpURLConnection.HTTP_ACCEPTED, gameStarterResponse);
-
     }
 
     @Override
     public ControllerResponse getFire(HttpExchange exchange) throws Exception{
         Map<String,String> requestURI = utils.decodeParams(exchange.getRequestURI().getRawQuery());
         CellLocation cellLocation = new CellLocation(requestURI.get("cell"));
-        if (gameControllers.size() > 0) {
-            RoundStatus roundStatus = gameControllers.get(0).getRoundStatus(cellLocation);
-            if (!roundStatus.isShipLeft()) gameControllers.get(0).endGame(false);
-                return new ControllerResponse(HttpURLConnection.HTTP_ACCEPTED, new ObjectMapper().writeValueAsString(roundStatus));
+        String url = "http://localhost:" + exchange.getRequestURI().getPort();
+        if (gameControllers.containsKey(url)) {
+            GameController cgameController = gameControllers.get(url);
+            RoundStatus roundStatus = cgameController.getRoundStatus(cellLocation);
+            ControllerResponse.iOnResponseSentListener onResponseSentListener = null;
+            if (!roundStatus.isShipLeft()) cgameController.endGame(false);
+            else onResponseSentListener = () -> sendGetFire(url);
+            return new ControllerResponse(HttpURLConnection.HTTP_ACCEPTED, new ObjectMapper().writeValueAsString(roundStatus), onResponseSentListener);
         }
-        else return new ControllerResponse(HttpURLConnection.HTTP_ACCEPTED, "");//TODO
+        else return new ControllerResponse(HttpURLConnection.HTTP_ACCEPTED, "Game Not Started");
     }
 }

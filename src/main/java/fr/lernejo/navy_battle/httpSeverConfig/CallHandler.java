@@ -20,6 +20,8 @@ public abstract class CallHandler implements HttpHandler {
         };
         if (null != controllerResponse) {
             responseOK(exchange, controllerResponse.rCode, controllerResponse.response);
+            if (controllerResponse.onResponseSendListener != null)
+                controllerResponse.onResponseSendListener.onResponseSend();
         } else {
             responseNotfound(exchange);
         }
