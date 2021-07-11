@@ -69,7 +69,7 @@ public class HttpServerHelper {
             .GET()
             .build();
 
-        return HttpClient.newHttpClient().sendAsync(requestGet, HttpResponse.BodyHandlers.ofString()).get(100, TimeUnit.SECONDS);
+        return HttpClient.newHttpClient().sendAsync(requestGet, HttpResponse.BodyHandlers.ofString()).get();
     }
 
     public String getURL() {
