@@ -10,4 +10,6 @@ public interface iMainController {
     ControllerResponse getFire(HttpExchange exchange);
 
     void sendPostStartGame(String url);
+
+    void sendGetFire(String url);
 }

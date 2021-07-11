@@ -32,6 +32,11 @@ class HttpServerHelperTest {
             public void sendPostStartGame(String url) {
 
             }
+
+            @Override
+            public void sendGetFire(String url) {
+
+            }
         });
         httpServerHelper.init();
         httpServerHelper.start(null);

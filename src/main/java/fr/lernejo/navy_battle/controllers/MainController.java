@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -21,13 +23,12 @@ import java.util.concurrent.ExecutionException;
 public class MainController implements iMainController{
 
     private final HttpServerHelper httpServerHelper;
-    private final GameController gameController;
+    private final List<GameController> gameControllers = new ArrayList<>();
     private final UUID id = UUID.randomUUID();
     private final Utils utils;
 
     public MainController(HttpServerHelper httpServerHelper) {
         this.httpServerHelper = httpServerHelper;
-        this.gameController = new GameController();
         this.utils = new Utils();
     }
 
@@ -39,6 +40,8 @@ public class MainController implements iMainController{
             HttpResponse<String> response = httpServerHelper.sendPostRequest(url, "/api/game/start", gameStarterJSON);
             if (response.statusCode() == HttpURLConnection.HTTP_ACCEPTED)
             {
+                GameStarter gameStarter = new ObjectMapper().readValue(response.body(), GameStarter.class);
+                gameControllers.add(new GameController(gameStarter.getId()));
                 sendGetFire(url);
             }
         } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
@@ -46,14 +49,15 @@ public class MainController implements iMainController{
         }
     }
 
-    private void sendGetFire(String url) {
+    @Override
+    public void sendGetFire(String url) {
         try {
-            CellLocation cellLocation = gameController.doFire();
+            CellLocation cellLocation = gameControllers.get(0).doFire();
             HttpResponse<String> response = httpServerHelper.sendGetRequest(url, "/api/game/fire?cell=" + cellLocation.toString());
             RoundStatus roundStatus = new ObjectMapper().readValue(response.body(), RoundStatus.class);
-            gameController.resultFire(roundStatus.getConsequence(), cellLocation);
+            gameControllers.get(0).resultFire(roundStatus.getConsequence(), cellLocation);
             if (!roundStatus.isShipLeft()){
-                gameController.endGame(true);
+                gameControllers.get(0).endGame(true);
                 //httpServerHelper.stop();
             }
         } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
@@ -67,11 +71,11 @@ public class MainController implements iMainController{
         try {
             String requestBody = new String(httpExchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
             GameStarter gameStarter = new ObjectMapper().readValue(requestBody, GameStarter.class);
+            gameControllers.add(new GameController(gameStarter.getId()));
             String gameStarterResponse = new ObjectMapper().writeValueAsString(new GameStarter(id.toString(),httpServerHelper.getURL(),"May the best code win"));
             response = new ControllerResponse(HttpURLConnection.HTTP_ACCEPTED, gameStarterResponse);
         } catch (IOException e) {
             if (!(e instanceof  JsonProcessingException)) {
-                e.printStackTrace();
                 response = new ControllerResponse(HttpURLConnection.HTTP_INTERNAL_ERROR,"Internal Error");
             }
             else
@@ -89,18 +93,19 @@ public class MainController implements iMainController{
                 exchange.getRequestURI().getRawQuery()
             );
             CellLocation cellLocation = new CellLocation(requestURI.get("cell"));
-            try {
-                RoundStatus roundStatus = gameController.getRoundStatus(cellLocation);
+            if (gameControllers.size() > 0)
+            {
+                RoundStatus roundStatus = gameControllers.get(0).getRoundStatus(cellLocation);
                 if (!roundStatus.isShipLeft())
-                    gameController.endGame(false);
+                    gameControllers.get(0).endGame(false);
                 response = new ControllerResponse(HttpURLConnection.HTTP_ACCEPTED, new ObjectMapper().writeValueAsString(roundStatus));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-                response = new ControllerResponse(HttpURLConnection.HTTP_INTERNAL_ERROR,"Internal Error");
             }
+            else response = new ControllerResponse(HttpURLConnection.HTTP_ACCEPTED, "");//TODO
         } catch (Exception e) {
-            e.printStackTrace();
-            response = new ControllerResponse(HttpURLConnection.HTTP_BAD_REQUEST, "Bad Request");
+            if (e instanceof JsonProcessingException)
+                response = new ControllerResponse(HttpURLConnection.HTTP_INTERNAL_ERROR,"Internal Error");
+            else
+                response = new ControllerResponse(HttpURLConnection.HTTP_BAD_REQUEST, "Bad Request");
         }
         return response;
     }

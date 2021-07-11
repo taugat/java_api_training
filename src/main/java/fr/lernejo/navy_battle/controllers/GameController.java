@@ -5,8 +5,11 @@ import fr.lernejo.navy_battle.model.CellLocation;
 import fr.lernejo.navy_battle.model.RoundStatus;
 import fr.lernejo.navy_battle.model.Ship;
 
+import java.util.UUID;
+
 public class GameController {
 
+    private final UUID adversaryID;
     private final int seaSize = 10;
     private final Cell[][] mySea = new Cell[seaSize][seaSize];
     private final CellStatus[][] adversarySea = new CellStatus[seaSize][seaSize];
@@ -21,7 +24,8 @@ public class GameController {
         NOT_HIT
     }
 
-    public GameController() {
+    public GameController(UUID adversaryID) {
+        this.adversaryID = adversaryID;
         for (int i = 0; i < seaSize; i++) {
             for (int j = 0; j < seaSize; j++) {
                 mySea[i][j] = new Cell();
