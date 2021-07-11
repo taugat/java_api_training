@@ -47,7 +47,6 @@ public class HttpServerHelper {
         }
     }
 
-
     public HttpResponse<String> sendPostRequest(String adversaryUrl, String path, String body) throws ExecutionException, InterruptedException {
         HttpRequest requestPost = HttpRequest.newBuilder()
             .uri(URI.create(adversaryUrl + path))

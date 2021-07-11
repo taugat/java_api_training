@@ -68,12 +68,10 @@ public class GameController {
         CellLocation cellLocation = null;
         try {
             cellLocation = new CellLocation(nextTarget[0],nextTarget[1]);
-            if (nextTarget[0] == 9)
-            {
+            if (nextTarget[0] == 9) {
                 nextTarget[0] = 0;
                 nextTarget[1] += 1;
-            }
-            else
+            } else
                 nextTarget[0] += 1;
         } catch (Exception e) {
             e.printStackTrace();

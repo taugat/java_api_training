@@ -12,7 +12,6 @@ public abstract class CallHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-
         ControllerResponse controllerResponse = switch (exchange.getRequestMethod())
         {
             case "GET" -> onGetResponse(exchange);

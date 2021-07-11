@@ -5,9 +5,9 @@ import fr.lernejo.navy_battle.utils.ControllerResponse;
 
 public interface iMainController {
 
-    ControllerResponse postCreateApiGameStartResponse(HttpExchange gameStarter);
+    ControllerResponse postCreateApiGameStartResponse(HttpExchange gameStarter) throws Exception;
 
-    ControllerResponse getFire(HttpExchange exchange);
+    ControllerResponse getFire(HttpExchange exchange) throws Exception;
 
     void sendPostStartGame(String url);
 
